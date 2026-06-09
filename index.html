@@ -17,15 +17,15 @@
 <body>
 
 <div class="grid">
-    <div class="cam-container"><div class="label">Камера 1</div><video id="cam1" autoplay muted controls></video></div>
-    <div class="cam-container"><div class="label">Камера 2</div><video id="cam2" autoplay muted controls></video></div>
-    <div class="cam-container"><div class="label">Камера 3</div><video id="cam3" autoplay muted controls></video></div>
-    <div class="cam-container"><div class="label">Камера 4</div><video id="cam4" autoplay muted controls></video></div>
+    <div class="cam-container"><div class="label">Камера 1 (Вход)</div><video id="cam1" autoplay muted controls></video></div>
+    <div class="cam-container"><div class="label">Камера 2 (Парковка)</div><video id="cam2" autoplay muted controls></video></div>
+    <div class="cam-container"><div class="label">Камера 3 (Холл)</div><video id="cam3" autoplay muted controls></video></div>
+    <div class="cam-container"><div class="label">Камера 4 (Склад)</div><video id="cam4" autoplay muted controls></video></div>
 </div>
 
 <script>
     // ВСТАВЬТЕ СЮДА ВАШУ ССЫЛКУ ИЗ CLOUDFLARE (БЕЗ СЛЭША НА КОНЦЕ)
-    const base = "https://helena-harrison-westminster-walking.trycloudflare.com";
+    const base = "https://kst-camera-mvp.loca.lt";
     
     function setupVideo(id, streamPath) {
         var video = document.getElementById(id);
