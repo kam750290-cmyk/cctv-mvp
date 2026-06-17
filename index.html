@@ -3,71 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Видеомониторинг MVP</title>
-    <!-- Подключаем библиотеку HLS.js для воспроизведения -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <title>Ссылки на видеопотоки MVP</title>
     <style>
-        body { margin: 0; background-color: #121212; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif;}
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; width: 98vw; height: 95vh; max-width: 1600px; }
-        .cam-container { position: relative; width: 100%; height: 100%; background: #000; border: 1px solid #333; }
-        video { width: 100%; height: 100%; object-fit: contain; }
-        .label { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 14px; font-weight: bold; pointer-events: none; z-index: 10;}
+        body { 
+            margin: 0; 
+            background-color: #121212; 
+            color: #ffffff;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            font-family: sans-serif;
+        }
+        .container {
+            text-align: center;
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        h1 { font-size: 20px; margin-bottom: 20px; color: #e0e0e0; }
+        .status { font-size: 14px; margin-bottom: 20px; color: #888; }
+        .links-list { display: flex; flex-direction: column; gap: 15px; }
+        .cam-link {
+            display: block;
+            background: #007bff;
+            color: #fff;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .cam-link:hover { background: #0056b3; }
     </style>
 </head>
 <body>
 
-<div class="grid">
-    <div class="cam-container"><div class="label">Камера 1</div><video id="cam1" autoplay muted controls></video></div>
-    <div class="cam-container"><div class="label">Камера 2</div><video id="cam2" autoplay muted controls></video></div>
-    <div class="cam-container"><div class="label">Камера 3</div><video id="cam3" autoplay muted controls></video></div>
-    <div class="cam-container"><div class="label">Камера 4</div><video id="cam4" autoplay muted controls></video></div>
+<div class="container">
+    <h1>Ссылки на камеры (MediaMTX)</h1>
+    <div id="status" class="status">Подготовка безопасного подключения...</div>
+    
+    <div class="links-list">
+        <a id="lnk1" class="cam-link" target="_blank" href="#">Камера 1 (Вход)</a>
+        <a id="lnk2" class="cam-link" target="_blank" href="#">Камера 2 (Парковка)</a>
+        <a id="lnk3" class="cam-link" target="_blank" href="#">Камера 3 (Холл)</a>
+        <a id="lnk4" class="cam-link" target="_blank" href="#">Камера 4 (Склад)</a>
+    </div>
 </div>
 
 <script>
-    // ВСТАВЬТЕ СЮДА ВАШУ ССЫЛКУ ИЗ CLOUDFLARE (БЕЗ СЛЭША НА КОНЦЕ)
-    const base = "https://kst-camera-mvp.loca.lt";
-    
-    function setupVideo(id, streamPath) {
-        var video = document.getElementById(id);
-        var url = base + streamPath;
-        
-        if (Hls.isSupported()) {
-            var hls = new Hls({
-                maxBufferLength: 10,
-                maxMaxBufferLength: 20,
-                liveSyncDurationCount: 3
-            });
-            hls.loadSource(url);
-            hls.attachMedia(video);
-            hls.on(Hls.Events.ERROR, function (event, data) {
-                if (data.fatal) {
-                    switch (data.type) {
-                        case Hls.ErrorTypes.NETWORK_ERROR:
-                            console.log("Обернулась сетевая ошибка, пробуем восстановить...");
-                            hls.startLoad();
-                            break;
-                        case Hls.ErrorTypes.MEDIA_ERROR:
-                            console.log("Ошибка медиа, пытаемся восстановить...");
-                            hls.recoverMediaError();
-                            break;
-                        default:
-                            hls.destroy();
-                            setTimeout(() => setupVideo(id, streamPath), 2000);
-                            break;
-                    }
+    // Твой текущий адрес туннеля
+    const base = "https://kst-cameraaa-mvp.loca.lt";
+
+    // Функция, которая делает фоновый запрос к корню туннеля, чтобы пробить заглушку
+    async function bypassTunnel() {
+        const statusDiv = document.getElementById('status');
+        try {
+            // Отправляем HEAD запрос с нужным заголовком
+            await fetch(base, {
+                method: 'HEAD',
+                mode: 'no-cors', // Позволяет обойти ограничения CORS для простого пинга
+                headers: {
+                    'Bypass-Tunnel-Reminder': 'true'
                 }
             });
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            // Для Safari на iOS
-            video.src = url;
+            statusDiv.innerText = "Подключение готово. Ссылки активны:";
+            statusDiv.style.color = "#4caf50";
+        } catch (e) {
+            console.log("Ошибка пробития туннеля:", e);
+            statusDiv.innerText = "Если ссылки не открываются, возможно туннель выключен.";
         }
     }
-    
-    // Запускаем потоки
-    setupVideo('cam1', '/cam1/index.m3u8');
-    setupVideo('cam2', '/cam2/index.m3u8');
-    setupVideo('cam3', '/cam3/index.m3u8');
-    setupVideo('cam4', '/cam4/index.m3u8');
+
+    // Заполняем ссылки правильными путями
+    document.getElementById('lnk1').href = base + '/cam1/index.m3u8';
+    document.getElementById('lnk2').href = base + '/cam2/index.m3u8';
+    document.getElementById('lnk3').href = base + '/cam3/index.m3u8';
+    document.getElementById('lnk4').href = base + '/cam4/index.m3u8';
+
+    // Запускаем обход заглушки при загрузке страницы
+    bypassTunnel();
 </script>
 
 </body>
