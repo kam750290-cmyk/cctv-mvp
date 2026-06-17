@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Панель просмотра камер</title>
+    <title>Пульт управления камерами</title>
     <style>
-        /* Общие стили для центрирования всего на экране */
         body { 
             margin: 0; 
-            background-color: #121212; /* Очень темный фон */
+            background-color: #121212; 
             color: #ffffff;
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
-            min-height: 100vh; /* Минимальная высота - весь экран */
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh; 
+            font-family: 'Segoe UI', Roboto, sans-serif;
             padding: 20px;
             box-sizing: border-box;
         }
@@ -35,67 +34,49 @@
             font-weight: 300;
         }
 
-        /* Стиль контейнера сетки */
         .grid-container {
             display: grid;
-            /* Два столбца одинаковой ширины */
             grid-template-columns: repeat(2, 1fr); 
-            /* Расстояние между квадратами */
             gap: 20px; 
             width: 100%;
-            /* Максимальная ширина, чтобы на ПК не растягивалось слишком сильно */
             max-width: 600px; 
         }
 
-        /* Стиль каждой квадратной ссылки */
         .cam-btn {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            
-            /* Делаем элемент квадратным: ширина 100% от колонки, 
-               aspect-ratio гарантирует, что высота будет равна ширине */
             width: 100%;
             aspect-ratio: 1 / 1; 
-            
-            background: #1e1e1e; /* Чуть светлее фона */
+            background: #1e1e1e; 
             color: #fff;
             text-decoration: none;
-            border-radius: 12px; /* Скругленные углы */
-            border: 2px solid #333; /* Тонкая рамка */
-            
-            /* Тени для объема */
+            border-radius: 12px; 
+            border: 2px solid #333; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            
-            /* Анимация при наведении */
             transition: all 0.2s ease-in-out;
-            
-            /* Чтобы текст не выделялся при частом тапе */
             -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
 
-        /* Эффект при наведении мыши (на ПК) */
         .cam-btn:hover {
             background: #2a2a2a;
-            border-color: #007bff; /* Синяя рамка */
-            transform: translateY(-3px); /* Легкое всплытие */
+            border-color: #007bff; 
+            transform: translateY(-3px); 
             box-shadow: 0 6px 12px rgba(0,123,255,0.2);
         }
 
-        /* Эффект при нажатии (и тапе на телефоне) */
         .cam-btn:active {
             transform: translateY(1px);
             box-shadow: 0 2px 4px rgba(0,0,0,0.5);
             background: #181818;
         }
 
-        /* Стили для текста внутри квадрата */
         .cam-number {
             font-size: 48px;
             font-weight: bold;
-            color: #007bff; /* Синий акцент */
+            color: #007bff; 
             margin-bottom: 5px;
         }
 
@@ -105,7 +86,6 @@
             color: #e0e0e0;
         }
 
-        /* Адаптация для совсем маленьких экранов */
         @media (max-width: 400px) {
             gap: 15px;
             .cam-number { font-size: 36px; }
@@ -134,10 +114,9 @@
     </div>
 
 <script>
-    // Твой текущий адрес туннеля
     const base = "https://kst-cameraaa-mvp.loca.lt";
 
-    // Функция пробития заглушки localtunnel (оставляем без изменений)
+    // Оставляем фоновое пробитие заглушки localtunnel, чтобы у клиента не вылазил первый экран
     async function bypassTunnel() {
         const statusDiv = document.getElementById('status');
         try {
@@ -148,22 +127,22 @@
                     'Bypass-Tunnel-Reminder': 'true'
                 }
             });
-            statusDiv.innerText = "Подключение защищено. Выберите камеру:";
-            statusDiv.style.color = "#4caf50"; // Зеленый цвет успеха
+            statusDiv.innerText = "Подключение готово. Выберите камеру:";
+            statusDiv.style.color = "#4caf50"; 
         } catch (e) {
             console.log("Ошибка пробития туннеля:", e);
             statusDiv.innerText = "Ошибка подключения. Проверьте туннель.";
-            statusDiv.style.color = "#f44336"; // Красный цвет ошибки
+            statusDiv.style.color = "#f44336"; 
         }
     }
 
-    // Привязываем ссылки к кнопкам
-    document.getElementById('lnk1').href = base + '/cam1/index.m3u8';
-    document.getElementById('lnk2').href = base + '/cam2/index.m3u8';
-    document.getElementById('lnk3').href = base + '/cam3/index.m3u8';
-    document.getElementById('lnk4').href = base + '/cam4/index.m3u8';
+    // Генерируем чистые ссылки без index.m3u8
+    // Слэш на конце важен, чтобы MediaMTX сразу понял, что это директория потока
+    document.getElementById('lnk1').href = base + '/cam1/';
+    document.getElementById('lnk2').href = base + '/cam2/';
+    document.getElementById('lnk3').href = base + '/cam3/';
+    document.getElementById('lnk4').href = base + '/cam4/';
 
-    // Запускаем фоновую авторизацию
     bypassTunnel();
 </script>
 
