@@ -30,7 +30,7 @@
         .status { 
             font-size: 14px; 
             margin-bottom: 30px; 
-            color: #888; 
+            color: #4caf50; 
             font-weight: 300;
         }
 
@@ -80,23 +80,16 @@
             margin-bottom: 5px;
         }
 
-        .cam-label {
-            font-size: 16px;
-            font-weight: 500;
-            color: #e0e0e0;
-        }
-
         @media (max-width: 400px) {
             gap: 15px;
             .cam-number { font-size: 36px; }
-            .cam-label { font-size: 14px; }
         }
     </style>
 </head>
 <body>
 
     <h1>Мониторинг</h1>
-    <div id="status" class="status">Авторизация туннеля...</div>
+    <div class="status">Выберите камеру для просмотра:</div>
     
     <div class="grid-container">
         <a id="lnk1" class="cam-btn" target="_blank" href="#">
@@ -116,34 +109,12 @@
 <script>
     const base = "https://kst-cameraaa-mvp.loca.lt";
 
-    // Оставляем фоновое пробитие заглушки localtunnel, чтобы у клиента не вылазил первый экран
-    async function bypassTunnel() {
-        const statusDiv = document.getElementById('status');
-        try {
-            await fetch(base, {
-                method: 'HEAD',
-                mode: 'no-cors',
-                headers: {
-                    'Bypass-Tunnel-Reminder': 'true'
-                }
-            });
-            statusDiv.innerText = "Подключение готово. Выберите камеру:";
-            statusDiv.style.color = "#4caf50"; 
-        } catch (e) {
-            console.log("Ошибка пробития туннеля:", e);
-            statusDiv.innerText = "Ошибка подключения. Проверьте туннель.";
-            statusDiv.style.color = "#f44336"; 
-        }
-    }
-
-    // Генерируем чистые ссылки без index.m3u8
-    // Слэш на конце важен, чтобы MediaMTX сразу понял, что это директория потока
-    document.getElementById('lnk1').href = base + '/cam1/';
-    document.getElementById('lnk2').href = base + '/cam2/';
-    document.getElementById('lnk3').href = base + '/cam3/';
-    document.getElementById('lnk4').href = base + '/cam4/';
-
-    bypassTunnel();
+    // Прямая генерация ссылок с флагом обхода заглушки localtunnel.
+    // Никаких фоновых сетевых запросов (fetch) здесь больше нет.
+    document.getElementById('lnk1').href = base + '/cam1/?cookieCheck=1';
+    document.getElementById('lnk2').href = base + '/cam2/?cookieCheck=1';
+    document.getElementById('lnk3').href = base + '/cam3/?cookieCheck=1';
+    document.getElementById('lnk4').href = base + '/cam4/?cookieCheck=1';
 </script>
 
 </body>
